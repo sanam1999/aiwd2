@@ -1,12 +1,73 @@
 <?php
 include ('../isAuthenticate.php');
+require ('function.php');
 include ('../include/header.php');
-require ('../../model/odersandcard.php');
+require ('../../model/orders.php');
 require ('../../model/product.php');
 $orders = fetchOdersAsObjects();
 ?>
 <style>
+    .f {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+    }
 
+    .odercard {
+        display: flex;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        width: 50rem;
+        padding: 16px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .odercard img {
+        width: 150px;
+        height: 150px;
+        border-radius: 8px;
+        margin-right: 16px;
+    }
+
+    .odercard .status {
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
+
+        left: 19rem;
+
+        width: 100%;
+    }
+
+    .odercard .status p {
+        color: #ba6f58;
+        text-align: end;
+    }
+
+    .odercard-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .odercard-content h3 {
+        margin: 0;
+    }
+
+    .odercard-content p {
+        margin: 8px 0;
+    }
+
+    .odercard-content button {
+        padding: 8px 10px;
+        border: none;
+        border-radius: 4px;
+        background-color: #007BFF;
+        color: white;
+        cursor: pointer;
+        width: 10rem;
+    }
 </style>
 <div class="f">
     <?php if ($orders): ?>
@@ -14,16 +75,17 @@ $orders = fetchOdersAsObjects();
 
             $product = fetchSingleProduct($order->product_id);
             ?>
+
             <div class="odercard margintop-0-5">
-                <img src="https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTEyL3JtNjA3LTNkYmQtc2NlbmUwNC1hLW1vY2t1cF8zLmpwZw.jpg"
-                    alt="Card Image">
+                <img src="../../<?= $product->imageurl ?>" alt="Card Image">
                 <div class="odercard-content">
                     <span>
                         <h3 class="titale"> <?php echo $product->title ?></h3>
-                        <p><?php echo $product->description ?></p>
+                        <p><?php echo htmlspecialchars($product->description); ?></p>
                     </span>
                     <?php if ($order->status == "Pending"): ?>
-                        <form action="../../model/odersandcard.php?order_id=<?= urlencode($order->order_id) ?>" method="post">
+                        <form action="../../route.php?order_id=<?= urlencode($order->order_id) ?>" method="post">
+                            <input type="hidden" name="action" value="canceloder">
                             <button type="submit" class="cancelbtn">Cancel</button>
                         </form>
                     <?php elseif ($order->status == "Cancelled" || $order->status == "Delivered"): ?>
@@ -47,32 +109,12 @@ $orders = fetchOdersAsObjects();
         <?php endforeach; ?>
     <?php endif; ?>
 </div>
-
-
-
-
 <?php
 include ('../include/footer.php');
 ?>
 <?php
-function timeDifference($targetDateTime)
-{
-    $targetDate = new DateTime($targetDateTime);
-    $now = new DateTime();
-    $diff = $targetDate->diff($now);
-    if ($diff->days > 0) {
-        return $diff->days . " days";
-    } elseif ($diff->h > 0) {
-        return $diff->h . " hours";
-    } elseif ($diff->i > 0) {
-        return $diff->i . " minutes";
-    } else {
-        return $diff->s . " seconds";
-    }
-}
+
 ?>
-
-
 <script>
     const cancelBtns = document.querySelectorAll('.cancelbtn');
     cancelBtns.forEach(button => {
@@ -81,5 +123,4 @@ function timeDifference($targetDateTime)
 
         });
     });
-
 </script>

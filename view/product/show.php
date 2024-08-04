@@ -3,20 +3,6 @@
 require ('../../model/product.php');
 require ('../../model/RF.php');
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['product_id']) && !empty($_GET['product_id'])) {
-    $product_id = $_GET['product_id'];
-    $rating = $_POST['rating'];
-    $comment = $_POST['comment'];
-
-    if (empty($rating) || empty($comment)) {
-        $_SESSION['error'] = "Rating and comment are required";
-        header('Location: show.php?product_id=' . $product_id);
-        exit;
-    }
-
-    saveReview($product_id, $rating, $comment);
-}
-
 if (isset($_GET['product_id']) && !empty($_GET['product_id'])) {
     $product_id = $_GET['product_id'];
     $product = fetchSingleProduct($product_id);
@@ -27,9 +13,10 @@ if (isset($_GET['product_id']) && !empty($_GET['product_id'])) {
 
         <style>
             .line-through {
-    text-decoration: line-through;
-}
-            .oder {
+                text-decoration: line-through;
+            }
+
+            .order {
                 display: flex;
                 width: 40rem;
                 justify-content: space-evenly;
@@ -39,7 +26,7 @@ if (isset($_GET['product_id']) && !empty($_GET['product_id'])) {
                 border: solid black 1px;
             }
 
-            .oder a {
+            .order a {
                 border: solid black 1px;
                 padding: 0.5rem 1rem;
                 border-radius: 10px;
@@ -48,12 +35,9 @@ if (isset($_GET['product_id']) && !empty($_GET['product_id'])) {
                 color: white;
             }
 
-            .addcard {
-                background-color: black;
-                color: white;
-            }
-
-            .buynow {
+            .addcard,
+            .buynow,
+            .qnt {
                 background-color: black;
                 color: white;
             }
@@ -63,34 +47,55 @@ if (isset($_GET['product_id']) && !empty($_GET['product_id'])) {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
-                background-color: black;
-                color: white;
             }
         </style>
 
         <div class="card-deck">
+            <div class="user">
+                <form action="profile.php" method="get">
+                    <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($product->user_id); ?>">
+                    <button type="submit">Profile</button>
+                </form>
+            </div>
+
             <?php
             $newPrice = (int) $product->price;
             $discountedPrice = $newPrice - ($newPrice * 0.05);
-            echo '<div class="card  offset-3" style="width: 70rem;">
-                <img class="card-img-top" src="' . htmlspecialchars($product->imageurl) . '" alt="Card image cap">
-                <div class="card-body">
-                    <h5 class="card-title">' . htmlspecialchars($product->title) . '</h5>
-                    <p class="card-text">' . htmlspecialchars($product->description) . '</p>
-                    <p class="card-text">' . htmlspecialchars($product->stock) . '</p>
-                    <p class="card-text">' . htmlspecialchars($product->condition) . '</p>
-                    <p class="card-text">' . htmlspecialchars($product->created_at) . '</p>
-                    <p><span style="font-size:2rem;">&#8360; </span><span class ="line-through">' . htmlspecialchars($product->price) . '</span></p>
-                    <p><span style="font-size:2rem;">&#8360; </span>' . $discountedPrice . '</p>
-                </div>
-            </div>';
             ?>
+            <div class="card offset-3" style="width: 70rem;">
+                <img class="card-img-top" src="../../<?php echo htmlspecialchars($product->imageurl); ?>" alt="Card image cap">
+                <div class="card-body">
+                    <h5 class="card-title"><?php echo htmlspecialchars($product->title); ?></h5>
+                    <p class="card-text"><?php echo htmlspecialchars($product->description); ?></p>
+                    <p class="card-text"><?php echo htmlspecialchars($product->stock); ?></p>
+                    <p class="card-text"><?php echo htmlspecialchars($product->condition); ?></p>
+                    <p class="card-text"><?php echo htmlspecialchars($product->created_at); ?></p>
+                    <p>
+                        <span style="font-size:2rem;">&#8360; </span>
+                        <span class="line-through"><?php echo htmlspecialchars($product->price); ?></span>
+                    </p>
+                    <p>
+                        <span style="font-size:2rem;">&#8360; </span><?php echo $discountedPrice; ?>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="order">
+            <div class="addcard">Add to Cart</div>
+            <a id="buyNowLink" href="book.php?product_id=<?php echo htmlspecialchars($product_id); ?>&quantity=1">Buy Now</a>
+                <div class="qnt">
+                    <button class="m">-</button>
+                    <p class="countdisplay">1</p>
+                    <button class="p">+</button>
+                </div>
         </div>
 
         <div class="col-4 offset-3">
-            <form action="show.php?product_id=<?= htmlspecialchars($product->product_id) ?>" novalidate class="needs-validation"
-                method="post">
+            <form action="../../route.php?product_id=<?php echo htmlspecialchars($product->product_id); ?>" novalidate
+                class="needs-validation" method="post">
                 <div class="mt-5">
+                    <input type="hidden" name="action" value="comment">
                     <fieldset class="starability-slot">
                         <legend>First rating:</legend>
                         <input type="radio" id="no-rate" class="input-no-rate" name="rating" value="1" checked
@@ -118,73 +123,69 @@ if (isset($_GET['product_id']) && !empty($_GET['product_id'])) {
         </div>
 
         <?php
-            $pid = $product->product_id;
-            $Reviews = GetReview($pid);
+        $pid = $product->product_id;
+        $Reviews = GetReview($pid);
         $curuserid = $_SESSION['userid'];
-        if ($Reviews) {
-            echo '<div class="card offset-3 col-6">
-                    <h1 class="card-header" style="text-align: center;">Reviews</h1>
-                    <div class="p-2">';
 
-            foreach ($Reviews as $Review) {
-                echo '<div class="card-body card mt-3">
-                <span class = "str">
-                        <h4 class="card-title">@' . htmlspecialchars($Review->uname) . '
-                         <p class="starability-result" data-rating=' . htmlspecialchars($Review->rating) . '></p>
-                         <span>
-                        <p class="card-text">' . htmlspecialchars($Review->comment) . '</p>';
-                if ($curuserid == $Review->user_id) {
-                    echo '<a href="#" class="btn btn-primary" style="width: 160px;">Delete</a>';
-                }
+        if ($Reviews): ?>
+            <div class="card offset-3 col-6">
+                <h1 class="card-header" style="text-align: center;">Reviews</h1>
+                <div class="p-2">
+                    <?php foreach ($Reviews as $Review): ?>
+                        <div class="card-body card mt-3">
+                            <h4 class="card-title">@<?php echo htmlspecialchars($Review->uname); ?></h4>
+                            <p class="starability-result" data-rating="<?php echo htmlspecialchars($Review->rating); ?>"></p>
+                            <p class="card-text"><?php echo htmlspecialchars($Review->comment); ?></p>
+                            <?php if ($curuserid == $Review->user_id): ?>
 
-                echo '</div>';
-            }
 
-            echo '</div></div>';
-        }
+                                <form action="../../route.php?Review_id=<?php echo $Review->review_id ?>" method="POST">
+                                    <input type="hidden" name="action" value="deleteReview">
+                                    <button type="submit" class="btn">
+                                        Delete
+                                    </button>
+                                </form>
+                                <?php endif; ?>
+                                </div>
+                                <?php endforeach; ?>
+                                </div>
+                                </div>
+                                <?php endif; ?>
 
-        echo '<h1 class="card-header" style="text-align: center;">Related Items</h1>';
-
-        echo '<section class="course-2">';
-
-        $Category = "category";
-        $RProducts = fetchRelatedProducts($product->category, $Category);
-
-        if ($RProducts) {
-            foreach ($RProducts as $RProduct) {
-                if ($product->product_id === $RProduct->product_id) {
-                    continue;
-                }
-                $newPrice = (int) $RProduct->price;
-                $discountedPrice = $newPrice - ($newPrice * 0.05);
-
-                echo '<div class="card" style="width: 25rem;">
-                    <a class="a" href="show.php?product_id=' . htmlspecialchars($RProduct->product_id) . '">
-                      <img class="card-img-top" src="' . htmlspecialchars($RProduct->imageurl) . '" alt="Card image cap">
-                      <div class="card-body">
-                        <h5 class="card-title">' . htmlspecialchars($RProduct->title) . '</h5>
-                        <p class="card-text">' . htmlspecialchars($RProduct->description) . '</p>
-                        <p><span style="font-size:2rem;">&#8360; </span><span style="text-decoration: line-through;">' . htmlspecialchars($RProduct->price) . '</span></p>
-                        <p><span style="font-size:2rem;">&#8360; </span>' . $discountedPrice . '</p>
-                      </div>
-                    </a>
-                  </div>';
-            }
-        } else {
-            echo '<h3>Items Not Available</h3>';
-        }
-        echo '</section>';
-        ?>
-
-        <div class="oder">
-            <div class="addcard">Add to Cart</div>
-            <a id="buyNowLink" href="book.php?product_id=<?= $product_id; ?>&quantity=1">Buy Now</a>
-            <div class="qnt">
-                <button class="m">-</button>
-                <p class="countdisplay">1</p>
-                <button class="p">+</button>
-            </div>
-            </div>
+        <h1 class="card-header" style="text-align: center;">Related Items</h1>
+        <section class="course-2">
+            <?php
+            $RProducts = fetchRelatedProducts($product->category);
+            if ($RProducts): ?>
+                <?php foreach ($RProducts as $RProduct): ?>
+                    <?php
+                    if ($product->product_id === $RProduct->product_id) {
+                        continue;
+                    }
+                    $newPrice = (int) $RProduct->price;
+                    $discountedPrice = $newPrice - ($newPrice * 0.05);
+                    ?>
+                    <div class="card" style="width: 25rem;">
+                        <a class="a" href="show.php?product_id=<?php echo htmlspecialchars($RProduct->product_id); ?>">
+                            <img class="card-img-top" src="../../<?php echo htmlspecialchars($RProduct->imageurl); ?>" alt="Card image cap">
+                            <div class="card-body">
+                                <h5 class="card-title"><?php echo htmlspecialchars($RProduct->title); ?></h5>
+                                <p class="card-text"><?php echo htmlspecialchars($RProduct->description); ?></p>
+                                <p>
+                                    <span style="font-size:2rem;">&#8360; </span>
+                                    <span style="text-decoration: line-through;"><?php echo htmlspecialchars($RProduct->price); ?></span>
+                                </p>
+                                <p>
+                                    <span style="font-size:2rem;">&#8360; </span><?php echo $discountedPrice; ?>
+                                </p>
+                                </div>
+                                </a>
+                    </div>
+                <?php endforeach; ?>
+                <?php else: ?>
+                <h3>Items Not Available</h3>
+                <?php endif; ?>
+                </section>
 
         <script>
             let p = document.querySelector('.p');
@@ -196,7 +197,7 @@ if (isset($_GET['product_id']) && !empty($_GET['product_id'])) {
 
             function updateDisplay() {
                 countdisplay.innerText = count;
-                buyNowLink.href = `book.php?product_id=<?= htmlspecialchars($product_id); ?>&quantity=${count}`;
+                buyNowLink.href = `book.php?product_id=<?php echo htmlspecialchars($product_id); ?>&quantity=${count}`;
             }
 
             p.addEventListener('click', () => {
@@ -217,7 +218,7 @@ if (isset($_GET['product_id']) && !empty($_GET['product_id'])) {
         </script>
 
         <?php
-            include ('../include/footer.php');
+        include ('../include/footer.php');
     } else {
         $_SESSION['error'] = "Product not found";
         header('Location: home.php');
@@ -229,5 +230,3 @@ if (isset($_GET['product_id']) && !empty($_GET['product_id'])) {
     exit;
 }
 ?>
-        
-      

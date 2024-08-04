@@ -31,24 +31,29 @@ function fetchOdersAsObjects()
 
 function addAddress($district, $zip_code, $phone_number, $address, $province)
 {
+    echo $address;
+
     include ('conn.php');
     $address_id = generateUUID();
     $user_id = $_SESSION['userid'];
-
-  $sql = "INSERT INTO Address (address_id,user_id,district, zip_code, phone_number, address, province) VALUES (?, ?, ?, ?, ?)";
-            $stmt = mysqli_prepare($conn, $sql);
-            mysqli_stmt_bind_param($stmt, "sssiiss",$address_id,$user_id, $district, $zip_code, $phone_number, $address, $province);
-            if (mysqli_stmt_execute($stmt)) {
-                $_SESSION['success'] = "Address added successfully.";
-                header('Location: ../product/profile.php');
-                exit();
-            } else {
-                $_SESSION['error'] = "Error occurred during execution: " . mysqli_error($conn);
-                header('Location: ../product/profile.php');
-            }
+    try {
+        $sql = "INSERT INTO Address (address_id,user_id,district, zip_code, phone_number, address, province) VALUES (?, ?, ?, ?, ?,?,?)";
+        $stmt = mysqli_prepare($conn, $sql);
+        mysqli_stmt_bind_param($stmt, "sssiiss", $address_id, $user_id, $district, $zip_code, $phone_number, $address, $province);
+        if (mysqli_stmt_execute($stmt)) {
+            $_SESSION['success'] = "Address added successfully.";
+            header('Location: ' . $_SERVER['HTTP_REFERER']);
+            exit();
+        } else {
+            $_SESSION['error'] = "Error occurred during execution: " . mysqli_error($conn);
+            header('Location: ' . $_SERVER['HTTP_REFERER']);
+        }
         mysqli_close($conn);
-    
 
+    } catch (Exception $e) {
+        $_SESSION['error'] = $e->getMessage();
+    }
+    header('Location: ' . $_SERVER['HTTP_REFERER']);
     return;
 }
 function fetchAddress()
@@ -72,20 +77,17 @@ function fetchAddress()
     return $address;
 }
 
-
-
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_GET['order_id'])) {
-
-    $order_id = $_GET['order_id'];
+function canceloder($order_id)
+{
     include ('conn.php');
     $sql = "UPDATE Orders SET status = 'Cancelled' WHERE order_id='$order_id'";
 
     if (mysqli_query($conn, $sql)) {
         $_SESSION['success'] = "your order was canced";
     } else {
-        $_SESSION['error'] = "Welcome ";
+        $_SESSION['error'] = "error";
     }
-    header('Location: ../view/product/oders.php');
+    header('Location: ' . $_SERVER['HTTP_REFERER']);
 }
 
 

@@ -19,7 +19,7 @@ if ($_SESSION['success']) {
     echo $_SESSION['success'];
     unset($_SESSION['success']); 
     echo '</strong > 
-     <a href="' . $_SERVER['PHP_SELF'] . '"> <i class="flashclose fa-solid fa-xmark">h</i></a>
+     <a href="' . $_SERVER['PHP_SELF'] . '"> <i class="flashclose fa-solid fa-xmark"></i></a>
     </div>';
 }
 ?>

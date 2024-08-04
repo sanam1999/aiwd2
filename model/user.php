@@ -4,7 +4,6 @@ session_start();
 require('UUIDGenerator.php');
 function SignUpUser($name, $email, $password){
     $uuid = generateUUID();
-    echo $password;
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
     $sql = "INSERT INTO Users (user_id, email, password_hash, name) VALUES (?, ?, ?, ?)";
      include('conn.php');
@@ -17,17 +16,18 @@ function SignUpUser($name, $email, $password){
                 $_SESSION['login'] = true;
                 $_SESSION['user'] = $name;
                 $_SESSION['userid'] = $uuid;
-                header('location: ../product/home.php');
-              
-            } else {    
-                $_SESSION['error'] = "This user already exists.";     
+                header('location: view/product/home.php');
+
+            } else {
+                $_SESSION['error'] = "This user already exists.";
+                header('location: view/product/login.php');
             }
 
             mysqli_stmt_close($stmt);
         } 
         mysqli_close($conn);
     } catch (Exception $e) {
-         $_SESSION['error'] =  $e->getMessage();
+        $_SESSION['error'] = "you are alredy created account";
     }
     return;
 }
@@ -50,21 +50,21 @@ function LogdinUser($email, $passworD) {
             $_SESSION['userid'] = $usserid;
             $_SESSION['email'] = $email;
             $_SESSION['success'] = "welcome back " . $name;
-            
-           header('location: ../product/home.php');
+
+            header('location: view/product/home.php');
             exit();
         } else {
-            $_SESSION['error'] = "Invalid credentials";
-            header('location: ../user/login.php');
+
+            $_SESSION['error'] = "Invalid Password";
+            header('location: view/product/login.php');
             exit();
         }
     }else{
-        $_SESSION['error'] = "user not fount";
+        $_SESSION['error'] = "Invalid user Create acoount";
+        header('location: view/product/login.php');
     }
-    session_abort();
-   exit();
+
+
+    exit();
 }
-
-
-
 ?>

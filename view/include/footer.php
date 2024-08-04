@@ -1,6 +1,4 @@
- 
-   </main>
-
+</main>
 </body>
 <footer>
     <div class="back">
@@ -8,49 +6,36 @@
     </div>
     <div class="fut">
         <div class="f1">
-            <h5 class="bold">Get to Know Us</h5>
-            <p>Careers</p>
-            <p>Blog</p>
-            <p>About Amazon</p>
-            <p>Investor Relations</p>
-            <p>Amazon Devices</p>
-            <p>Amazon Science</p>
+            <h5 class="bold">Explore</h5>
+            <a href=""> <i class="fa-solid fa-house"></i> Home</a>
+            <a href=""> <i class="fa-solid fa-truck-fast"></i> Ordes</a>
+            <a href=""> <i class="fa-brands fa-sellsy"></i> Sels</a>
+            <a href=""><i class="fa-solid fa-heart"></i> Your favourite</a>
+            <a href=""><i class="fa-solid fa-user"></i> Profile</a>
+            <a href=""><i class="fa-solid fa-right-to-bracket"></i> Sing Up</a>
+            <a href=""> <i class="fa-solid fa-right-from-bracket"></i> Login</a>      
         </div>
+    
         <div class="f1">
-            <h5 class="bold">Make Money with Us</h5>
-            <p>Sell products on Amazon</p>
-            <p>Sell on Amazon Business</p>
-            <p>Sell apps on Amazon</p>
-            <p>Become an Affiliate</p>
-            <p>Advertise Your Products</p>
-            <p>Self-Publish with Us</p>
-            <p>Host an Amazon Hub</p>
-            <p>See More Make Money with Us</p>
+            <h5 class="bold">Follow Us</h5>
+            <a href="https://web.facebook.com/?_rdc=1&_rdr">  <i class="fa-brands fa-facebook"></i>  Facebook</a>
+            <a href=""> <i class="fa-brands fa-twitter"></i>  Twitter</a>
+            <a href=""> <i class="fa-brands fa-linkedin"></i>  Linkedin</a>
+            <a href=""> <i class="fa-brands fa-square-instagram"></i>  Instagram</a>
+            <a href=""> <i class="fa-brands fa-pinterest"></i>  Pinterest</a>
+            <a href=""> <i class="fa-brands fa-github"></i>  Github</a>
         </div>
-        <div class="f1">
-            <h5 class="bold">Amazon Payment Products</h5>
-            <p>Amazon Business Card</p>
-            <p>Shop with Points</p>
-            <p>Reload Your Balance</p>
-            <p>Amazon Currency Converter</p>
+<div class="f2">
+    <form  action="../../route.php" method="post">
+         <input type="hidden" name="action" value="feedback">
+        <label for="">system feedback</label>
+        <textarea name="comments" cols="50" rows="10" placeholder="Write Your feedback"></textarea>
+        <button type="submit">Submit</button>
+    </form>
         </div>
-
-        <div class="f1">
-            <h5 class="bold">Let Us Help You</h5>
-            <p>Amazon and COVID-19</p>
-            <p>Your Account</p>
-            <p>Shipping Rates & Policies</p>
-            <p>Your Orders</p>
-            <p>Returns & Replacements</p>
-            <p>Manage Your Content and Devices</p>
-            <p>Amazon Assistant</p>
-            <p>Help</p>
-        </div>
-
     </div>
     <div class="l-nav">
         <div class="logo2">
-
         </div>
         <div class="sec1">
             <div class="eng-i s1"> <i class="fa-solid fa-globe"></i>
@@ -63,7 +48,6 @@
                 <p>United States</p>
             </div>
         </div>
-
     </div>
     <div class="last">
         <p>
@@ -77,25 +61,16 @@
         const sidebar = document.querySelector('.oc');
         const body = document.querySelector('main');
         const toggleButton = document.querySelector('.toggleButton');
-
         toggleButton.addEventListener('click', function () {
             if (sidebar.style.left === '-250px') {
                 sidebar.style.left = '0';
                 body.style.marginLeft = '250px';
-
             } else {
                 sidebar.style.left = '-250px';
-                
                 body.style.marginLeft = '0';
             }
         });
-
-
-
     });
-
-
-
 </script>
 </body>
 
