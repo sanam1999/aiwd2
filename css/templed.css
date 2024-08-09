@@ -1,6 +1,6 @@
 * {
     margin: 0;
-    font-family: "Amazon Ember", Arial, sans-serif;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     border: border-box;
     text-decoration: none;
 
@@ -537,10 +537,6 @@ h5 {
 
 }
 
-h2:hover {
-    color: rgb(190, 115, 115);
-
-}
 
 label {
     font-size: 0.75rem;

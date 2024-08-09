@@ -1,4 +1,5 @@
 </main>
+
 </body>
 <footer>
     <div class="back">
@@ -13,7 +14,9 @@
             <a href=""><i class="fa-solid fa-heart"></i> Your favourite</a>
             <a href=""><i class="fa-solid fa-user"></i> Profile</a>
             <a href=""><i class="fa-solid fa-right-to-bracket"></i> Sing Up</a>
-            <a href=""> <i class="fa-solid fa-right-from-bracket"></i> Login</a>      
+            <a href=""> <i class="fa-solid fa-right-from-bracket"></i> Login</a>
+
+      
         </div>
     
         <div class="f1">
@@ -29,7 +32,7 @@
     <form  action="../../route.php" method="post">
          <input type="hidden" name="action" value="feedback">
         <label for="">system feedback</label>
-        <textarea name="comments" cols="50" rows="10" placeholder="Write Your feedback"></textarea>
+        <textarea name="comments" cols="50" rows="10" required placeholder="Write Your feedback"></textarea>
         <button type="submit">Submit</button>
     </form>
         </div>

@@ -56,7 +56,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 break;
             case 'canceloder':
                 $order_id = $_GET['order_id'];
-                canceloder($order_id);
+                $statment = "Cancelled";
+                $_SESSION['success'] = "your order was canced";
+                orderStateChange($order_id, $statment);
                 break;
             case 'buy':
                 $product_id = $_POST['product_id'] ?? null;
@@ -92,10 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $condition = $_POST['condition'];
                 $imageURL = upload($_FILES['imageurl']);
                 addProduct($category, $title, $description, $price, $stock, $condition, $imageURL);
-
                 break;
-
-
             case 'addAddress':
                 $district = $_POST['district'] ?? null;
                 $zip_code = $_POST['zip_code'] ?? null;
@@ -103,6 +102,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $address = $_POST['address'] ?? null;
                 $province = $_POST['province'] ?? null;
                 addAddress($district, $zip_code, $phone_number, $address, $province);
+                break;
+            case 'confrmOders':
+                $order_id = $_GET['order_id'];
+                $statment = "Shipped";
+                $_SESSION['success'] = "this will ";
+                orderStateChange($order_id, $statment);
                 break;
             case 'feedback':
                 $comments = $_POST['comments'];

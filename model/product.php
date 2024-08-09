@@ -269,7 +269,7 @@ function editPost($product_id, $category, $title, $description, $price, $imageur
         }
         $stmt->close();
     } else {
-        $_SESSION['error'] = "Error preparing statement: " . $conn->error;
+        $_SESSION['error'] = "Error preparing statement: ";
     }
     $conn->close();
     header('Location: ' . $_SERVER['HTTP_REFERER']);

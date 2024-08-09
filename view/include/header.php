@@ -9,11 +9,16 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>amazon-clone</title>
 
+    
+  </head>
+
+  <link rel="icom" href="https://cdn.pixabay.com/photo/2017/03/16/21/18/logo-2150297_640.png">
     <link rel="stylesheet" href="../../css/templed.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="../../css/style2.css">
+    <link rel="stylesheet" href="../../css/star.css">
 
     <style>
         * {
@@ -108,6 +113,11 @@ session_start();
             display: block;
 
         }
+        .weblogo{
+            color: white;
+            font-size: 2rem;
+
+        }
     </style>
 
 </head>
@@ -116,10 +126,10 @@ session_start();
 <header>
 
     <div class="navbar">
-        <div class="nav border">
-            <a href="../product/home.php">
-                <div class="logo"></div>
-        </div> </a>
+        
+            <a class="border" href="../product/home.php">
+                <i class="fa-solid weblogo fa-cart-flatbed"></i>
+       </a>
         
            
                 <form class="nav-sea " action="home.php" method="get">
@@ -216,20 +226,19 @@ session_start();
 
 <div id="sidebar" class="sidebar oc">
 <?php if ($_SESSION['login'] == true && isset($_SESSION['login'])): ?>
-        <a class="sidebar-item oc" href="../product/logout.php"><i class="fa-solid fa-user"></i>
+        <a class="sidebar-item oc" href="../product/profile.php"><i class="fa-solid fa-user"></i>
         <?php echo $_SESSION['user']; ?></a>
 <?php endif ?>
 <a href="../product/home.php" class="sidebar-item oc"> <i class="fa-solid fa-house"></i> Home</a>
 <a href="#" class="sidebar-item oc"> <i class="fa-solid fa-handshake-angle"></i> Help</a>
 <a href="#" class="sidebar-item oc"> <i class="fa-solid fa-cart-shopping"></i> Orders</a>
 <a href="#" class="sidebar-item oc"> <i class="fa-solid fa-bookmark"></i> Card</a>
-<a href="../product/AddProduct.php" class="sidebar-item oc"> Add Post</a>
-<a href="#" class="sidebar-item oc"> Contact</a>
-<a href="#" class="sidebar-item oc"> Contact</a>
-<a href="#" class="sidebar-item oc"> Contact</a>
-<a href="#" class="sidebar-item oc"> Contact</a>
-<a href="#" class="sidebar-item oc"> Contact</a>
-
+<a href="../product/AddProduct.php" class="sidebar-item oc"><i class="fa-solid fa-plus"></i> Add Post</a>
+<a href="../product/sales.php" class="sidebar-item oc"> <i class="fa-brands fa-sellsy"></i> Seles</a>
+<a href="#" class="sidebar-item oc"> <i class="fa-solid fa-truck-fast"></i> Placed Orders</a>
+<?php if ($_SESSION['login'] == true && isset($_SESSION['login'])): ?>
+    <a class="sidebar-item oc" href="../product/logout.php"><i class="fa-solid fa-right-from-bracket"></i> Log Out</a>
+<?php endif ?>
 </div>
 
 <?php

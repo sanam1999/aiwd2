@@ -31,17 +31,22 @@ include ('../include/header.php');
     .liked {
         color: red;
     }
+    .homeimage{
+        width: 100%;
+        background-color: black;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+       
+    }
 </style>
 <section class="home">
-    <div class="image">
-        <img src="images/home-img.png" alt="">
+  
+    
+    <div class="homeimage">
+     <img src="../../image/staticImg/image.png" alt="img">
     </div>
-    <div class="content">
-        <h3>your course to success</h3>
-        <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Culpa cumque neque quam amet perferendis sed rem ut
-            tenetur porro praesentium.</p>
-        <a href="#" class="btn">get started</a>
-    </div>
+    <br>
 </section>
 <?php if ($products): ?>
     <div class="product-grid">

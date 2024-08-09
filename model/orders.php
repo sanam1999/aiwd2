@@ -1,12 +1,10 @@
 <?php
-
 function fetchOdersAsObjects()
 {
     $user_id = $_SESSION['userid'];
     include ('conn.php');
     $sql = "SELECT * FROM Orders where user_id = '$user_id'  ORDER BY oder_date DESC ";
     $result = mysqli_query($conn, $sql);
-
     $ordes = array();
 
     if ($result && mysqli_num_rows($result) > 0) {
@@ -28,7 +26,6 @@ function fetchOdersAsObjects()
 
     return $ordes;
 }
-
 function addAddress($district, $zip_code, $phone_number, $address, $province)
 {
     echo $address;
@@ -76,11 +73,10 @@ function fetchAddress()
     }
     return $address;
 }
-
-function canceloder($order_id)
+function orderStateChange($order_id, $statment)
 {
     include ('conn.php');
-    $sql = "UPDATE Orders SET status = 'Cancelled' WHERE order_id='$order_id'";
+    $sql = "UPDATE Orders SET status = '$statment' WHERE order_id='$order_id'";
 
     if (mysqli_query($conn, $sql)) {
         $_SESSION['success'] = "your order was canced";
@@ -90,5 +86,51 @@ function canceloder($order_id)
     header('Location: ' . $_SERVER['HTTP_REFERER']);
 }
 
+function fetchMysales()
+{
+    $user_id = $_SESSION['userid'];
+    include ('conn.php');
+    $sql = "SELECT Orders.*,Products.title, Products.description FROM Products LEFT JOIN Orders ON Products.product_id = Orders.product_id WHERE Products.user_id = '$user_id' AND Orders.product_id IS NOT NULL";
+    $result = mysqli_query($conn, $sql);
+    $orders = array();
+    if ($result) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $orders[] = $row;
+        }
+    }
+    return $orders;
+}
 
-?>
+function fetchMyAllsales()
+{
+    $user_id = $_SESSION['userid'];
+    include ('conn.php');
+
+    $sql = "SELECT COUNT(CASE WHEN Orders.status = 'Pending' THEN 1 END) AS pending_orders_count, 
+               COUNT(Orders.order_id) AS total_orders_count, 
+               SUM(Orders.price) AS total_sales, 
+               SUM(Orders.quntity) AS total_quantity, 
+               Products.title, 
+               Products.description, 
+               Products.imageUrl, 
+               Products.created_at 
+        FROM Products 
+        LEFT JOIN Orders ON Products.product_id = Orders.product_id 
+        WHERE Products.user_id = '$user_id' 
+        GROUP BY Products.product_id;";
+
+    $result = mysqli_query($conn, $sql);
+    $orders = array();
+    if ($result) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $orders[] = $row;
+        }
+    }
+
+    
+
+    return $orders;
+}
+
+
+

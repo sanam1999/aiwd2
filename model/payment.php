@@ -14,17 +14,13 @@ function payment($product_id, $quantity, $price, $discountedPrice)
 
     $user_id = $_SESSION['userid'];
     $order_id = generateUUID();
-    $status = 'Pending'; // Default status for a new order
-
-    // Prepare the SQL statement
+    $status = 'Pending';
     $sql = "INSERT INTO Orders (order_id, user_id, product_id, total, price, status, quntity) VALUES (?, ?, ?, ?, ?, ?, ?)";
     $stmt = mysqli_prepare($conn, $sql);
 
     if ($stmt) {
-        // Bind parameters
-        mysqli_stmt_bind_param($stmt, "ssssssi", $order_id, $user_id, $product_id, $discountedPrice, $price, $status, $quantity);
 
-        // Execute the statement
+        mysqli_stmt_bind_param($stmt, "ssssssi", $order_id, $user_id, $product_id, $discountedPrice, $price, $status, $quantity);
         if (mysqli_stmt_execute($stmt)) {
             $_SESSION['success'] = "Your order will be delivered within 10 working days successfully.";
         } else {
